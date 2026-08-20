@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
+const redis = Redis.fromEnv();
 
 export default async function Page({ params }) {
   const { id } = params;
@@ -7,7 +8,7 @@ export default async function Page({ params }) {
   // Cek data tag di database Vercel KV
   let tagData = null;
   try {
-    tagData = await kv.get(`tag:${id}`);
+    tagData = await redis.get(`tag:${id}`);
   } catch (error) {
     console.log("Database belum terhubung atau kosong");
   }
