@@ -1,4 +1,4 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis'; const redis = Redis.fromEnv();
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
@@ -16,12 +16,12 @@ export async function POST(request) {
   }
 
   // Simpan data ke Database Vercel KV
-  await kv.set(`tag:${tagId}`, {
-    storeName: storeName,
-    googleUrl: googleUrl,
-    isActive: true,
-    activatedAt: new Date().toISOString()
-  });
+ await redis.set(`tag:${tagId}`, {
+  storeName: storeName,
+  googleUrl: googleUrl,
+  isActive: true,
+  activatedAt: new Date().toISOString()
+});
 
   // Redirect kembali ke link tag agar langsung dicoba
   return NextResponse.redirect(new URL(`/r/${tagId}`, request.url));
