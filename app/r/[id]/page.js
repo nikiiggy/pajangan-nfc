@@ -12,10 +12,17 @@ export default async function Page({ params }) {
     console.log("Database belum terhubung atau kosong");
   }
 
-  // Jika sudah aktif -> Direct Otomatis ke Google Review
-  if (tagData && tagData.isActive && tagData.googleUrl) {
-    redirect(tagData.googleUrl);
-  }
+ // Ambil parameter '?edit=true' dari URL jika ada
+const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+const { searchParams: serverParams } = new URL(request?.url || 'http://localhost');
+
+// Cek apakah ada query parameter ?edit=true
+const isEditMode = params?.edit === 'true' || searchParams?.get('edit') === 'true';
+
+// JIKA SUDAH AKTIF DAN TIDAK DALAM MODE EDIT -> Direct ke Google Review
+if (tagData && tagData.isActive && tagData.googleUrl && !isEditMode) {
+  redirect(tagData.googleUrl);
+}
 
   return (
     <div style={{ maxWidth: '400px', margin: '30px auto', padding: '24px', backgroundColor: '#fff', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', fontFamily: 'sans-serif' }}>
